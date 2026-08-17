@@ -1,8 +1,6 @@
 package com.proyectocoryb.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,10 +19,8 @@ public class Atencion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Fecga de atención requerida")
     private LocalDateTime fecha;
 
-    @NotBlank(message = "Motivo de la atencion requerido")
     private String motivo;
 
     //Un paciente puede tener varias atenciones medicas
@@ -38,7 +34,6 @@ public class Atencion {
     private Empleado empleado;
 
     //Guardar el estado de la atencion
-    @NotNull(message = "El estado es requerido")
     @Enumerated(EnumType.STRING)
     private Estado estado;
 }

@@ -2,8 +2,6 @@ package com.proyectocoryb.model;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,10 +21,8 @@ public class Especialidad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nombre obligatorio")
     private String nombre;
 
-    @NotNull(message = "El estado es requerido")
     @Enumerated(EnumType.STRING)
     private Estado estado;
 

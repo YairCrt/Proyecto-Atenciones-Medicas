@@ -1,7 +1,6 @@
 package com.proyectocoryb.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +17,10 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Usuario obligatorio")
+    @Column(nullable = false)
     private String usuario;
 
-    @NotBlank(message = "Contraseña obligatoria")
+    @Column(nullable = false)
     private String contrasena;
 
     //Cada usuario se asocia a una persona

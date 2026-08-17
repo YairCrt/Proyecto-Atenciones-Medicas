@@ -1,7 +1,6 @@
 package com.proyectocoryb.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,11 +24,9 @@ public class Empleado {
     @JoinColumn(name = "persona_id", nullable = false, foreignKey = @ForeignKey(name = "FK_empleado_persona"))
     private Persona persona;
 
-    @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    @NotNull(message = "El estado es requerido")
     @Enumerated(EnumType.STRING)
     private Estado estado;
 

@@ -1,9 +1,6 @@
 package com.proyectocoryb.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,14 +15,12 @@ public class Persona {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nombre requerido")
+    @Column(nullable = false)
     private String nombre;
 
-    @NotBlank(message = "Email requerido")
-    @Email(message = "Email debe de ser válido")
+    @Column(nullable = false)
     private String email;
 
-    @NotNull(message = "El estado es requerido")
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
