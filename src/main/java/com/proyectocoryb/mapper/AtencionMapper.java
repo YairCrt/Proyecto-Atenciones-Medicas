@@ -6,6 +6,7 @@ import com.proyectocoryb.mapper.config.MapperConfiguration;
 import com.proyectocoryb.model.Atencion;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(config = MapperConfiguration.class, uses = {PacienteMapper.class})
 public interface AtencionMapper {
@@ -15,4 +16,8 @@ public interface AtencionMapper {
     Atencion toEntity(AtencionRequestDTO dto);
 
     AtencionResponseDTO toResponse(Atencion entity);
+
+    @Mapping(source = "pacienteId", target = "paciente.id")
+    @Mapping(source = "empleadoId", target = "empleado.id")
+    void updateEntity(@MappingTarget Atencion entity, AtencionRequestDTO dto);
 }
