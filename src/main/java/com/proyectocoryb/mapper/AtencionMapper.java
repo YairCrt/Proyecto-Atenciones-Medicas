@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(config = MapperConfiguration.class, uses = {PacienteMapper.class})
+@Mapper(config = MapperConfiguration.class, uses = {PacienteMapper.class, EmpleadoMapper.class})
 public interface AtencionMapper {
 
     @Mapping(source = "pacienteId", target = "paciente.id")
