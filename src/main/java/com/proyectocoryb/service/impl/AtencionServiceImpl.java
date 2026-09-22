@@ -2,6 +2,7 @@ package com.proyectocoryb.service.impl;
 
 import com.proyectocoryb.dto.request.AtencionRequestDTO;
 import com.proyectocoryb.dto.response.AtencionResponseDTO;
+import com.proyectocoryb.exception.BusinessException;
 import com.proyectocoryb.exception.InvalidRequestException;
 import com.proyectocoryb.exception.ResourceNotFoundException;
 import com.proyectocoryb.mapper.AtencionMapper;
@@ -132,7 +133,31 @@ public class AtencionServiceImpl implements AtencionService {
 
     @Override
     public AtencionResponseDTO actualizarAtencion(Long id, AtencionRequestDTO requestDTO) {
-        return null;
+        Atencion atencion = atencionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Atencion no encontrada con id: " + id));
+        if(atencion.getEstado() == Estado.FINALIZADO){
+            throw new BusinessException("No se puede actualizar una atención que ya está finalizada.");
+        }
+        if(requestDTO.getFecha() == null){
+            throw new InvalidRequestException("La fecha de la atención es obligatoria.");
+        }
+        atencion.setFecha(requestDTO.getFecha());
+        atencion.setMotivo(requestDTO.getMotivo());
+        atencion.setEstado(requestDTO.getEstado());
+
+        if(requestDTO.getPacienteId() != null && !requestDTO.getEmpleadoId().equals(atencion.getPaciente().getId())){
+            atencion.setPaciente(pacienteRepository.findById(requestDTO.getPacienteId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado con id: " + requestDTO.getPacienteId())));
+        }
+
+        if(requestDTO.getEmpleadoId() != null && requestDTO.getEmpleadoId().equals(atencion.getEmpleado().getId())){
+            atencion.setEmpleado(empleadoRepository.findById(requestDTO.getEmpleadoId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + requestDTO.getEmpleadoId())));
+        }
+        atencion = atencionRepository.save(atencion);
+        log.info("Atenci+on actualizada. id = {}", atencion.getId());
+
+        return atencionMapper.toResponse(atencion);
     }
 
     @Override
