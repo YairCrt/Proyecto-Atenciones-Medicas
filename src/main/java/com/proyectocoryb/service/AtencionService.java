@@ -2,6 +2,7 @@ package com.proyectocoryb.service;
 
 import com.proyectocoryb.dto.request.AtencionRequestDTO;
 import com.proyectocoryb.dto.response.AtencionResponseDTO;
+import com.proyectocoryb.model.Estado;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,7 +20,7 @@ public interface AtencionService {
 
     Page<AtencionResponseDTO> listarPorEmpleado(Long empleadoId, Pageable pageable);
 
-    Page<AtencionResponseDTO> listarPorEstado(Long empleadoId, Pageable pageable);
+    Page<AtencionResponseDTO> listarPorEstado(Estado estado, Pageable pageable);
 
     Page<AtencionResponseDTO> listarPorRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
 
@@ -29,5 +30,5 @@ public interface AtencionService {
 
     void eliminarAtencion(Long id);
 
-    Page<AtencionResponseDTO> listarAtencionesPacienteAutenticado(Pageable pageable);
+    Page<AtencionResponseDTO> listarAtencionesDelPacienteAutenticado(String username, Pageable pageable);
 }

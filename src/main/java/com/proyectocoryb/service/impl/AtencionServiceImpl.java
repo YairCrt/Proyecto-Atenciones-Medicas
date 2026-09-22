@@ -7,6 +7,7 @@ import com.proyectocoryb.exception.ResourceNotFoundException;
 import com.proyectocoryb.mapper.AtencionMapper;
 import com.proyectocoryb.model.Atencion;
 import com.proyectocoryb.model.Empleado;
+import com.proyectocoryb.model.Estado;
 import com.proyectocoryb.model.Paciente;
 import com.proyectocoryb.repository.AtencionRepository;
 import com.proyectocoryb.repository.EmpleadoRepository;
@@ -61,37 +62,72 @@ public class AtencionServiceImpl implements AtencionService {
     @Override
     @Transactional(readOnly = true) //Operacion de solo lectura
     public AtencionResponseDTO obtenerAtencionPorId(Long id) {
-        return null;
+       return atencionRepository.findById(id)
+               .map(atencionMapper::toResponse)
+               .orElseThrow(() -> new ResourceNotFoundException("Atencion no encontrada con id: " + id));
+
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AtencionResponseDTO> listarTodas(Pageable pageable) {
-        return null;
+
+        return atencionRepository.findAll(pageable)
+                .map(atencionMapper::toResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AtencionResponseDTO> listarPorPaciente(Long pacienteId, Pageable pageable) {
-        return null;
+        Paciente paciente = pacienteRepository.findById(pacienteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado con id: " + pacienteId));
+
+        return atencionRepository.findByPaciente(paciente, pageable)
+                .map(atencionMapper::toResponse); //Obtenemos el paciente y lo retornamos transformado en DTO
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AtencionResponseDTO> listarPorEmpleado(Long empleadoId, Pageable pageable) {
-        return null;
+
+        Empleado empleado = empleadoRepository.findById(empleadoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + empleadoId));
+
+        return atencionRepository.findByEmpleado(empleado, pageable)
+                .map(atencionMapper::toResponse);
     }
 
     @Override
-    public Page<AtencionResponseDTO> listarPorEstado(Long empleadoId, Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<AtencionResponseDTO> listarPorEstado(Estado estado, Pageable pageable) {
+
+        return atencionRepository.findByEstado(estado, pageable)
+                .map(atencionMapper::toResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AtencionResponseDTO> listarPorRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable) {
-        return null;
+        if(fechaInicio == null || fechaFin == null){
+            throw new InvalidRequestException("Debe de proporcionar fecha de inicio y fin para el filtro.");
+        }
+        if(fechaFin.isBefore(fechaInicio)){
+            throw new InvalidRequestException("La fecha de fin NO puede ser anterior a la fecha de inicio.");
+        }
+
+        return atencionRepository.findByFechaBetween(fechaInicio, fechaFin, pageable)
+                .map(atencionMapper::toResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<AtencionResponseDTO> buscarPorMotivo(String motivo, Pageable pageable) {
-        return null;
+        if(motivo == null || motivo.trim().isEmpty()){
+            throw new InvalidRequestException("El motivo para busqueda no puede estar vacio.");
+        }
+
+        return atencionRepository.searchByMotivo(motivo, pageable)
+                .map(atencionMapper::toResponse);
     }
 
     @Override
@@ -100,12 +136,22 @@ public class AtencionServiceImpl implements AtencionService {
     }
 
     @Override
+    @Transactional
     public void eliminarAtencion(Long id) {
-
+        if(!atencionRepository.existsById(id)){
+            throw new ResourceNotFoundException("Atencion no encontrada con ID: " + id);
+        }
+        atencionRepository.deleteById(id);
+        log.info("Atencion eliminadoa. id = {}", id);
     }
 
     @Override
-    public Page<AtencionResponseDTO> listarAtencionesPacienteAutenticado(Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<AtencionResponseDTO> listarAtencionesDelPacienteAutenticado(String username, Pageable pageable) {
+        Paciente paciente = pacienteRepository.findByUsuarioUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado para el usuario autenticado."));
+
+        return atencionRepository.findByPaciente(paciente, pageable)
+                .map(atencionMapper::toResponse);
     }
 }
