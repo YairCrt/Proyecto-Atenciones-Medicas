@@ -1,7 +1,7 @@
 package com.proyectocoryb.model;
 
 public enum Estado {
-    ACTIVADO,
+    ACTIVO,
     INACTIVO,
     PENDIENTE,
     FINALIZADO,

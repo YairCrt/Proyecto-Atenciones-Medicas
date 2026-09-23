@@ -132,6 +132,7 @@ public class AtencionServiceImpl implements AtencionService {
     }
 
     @Override
+    @Transactional
     public AtencionResponseDTO actualizarAtencion(Long id, AtencionRequestDTO requestDTO) {
         Atencion atencion = atencionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Atencion no encontrada con id: " + id));
