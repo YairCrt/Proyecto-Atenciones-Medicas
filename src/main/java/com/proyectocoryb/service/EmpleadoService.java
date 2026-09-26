@@ -16,7 +16,7 @@ public interface EmpleadoService {
 
     Page<EmpleadoResponseDTO> listarEmpleados(Pageable pageable);
 
-    Page<EmpleadoResponseDTO> listarPorEstadop(Estado estado, Pageable pageable);
+    Page<EmpleadoResponseDTO> listarPorEstado(Estado estado, Pageable pageable);
 
     void eliminarEmpleado(Long id);
 
