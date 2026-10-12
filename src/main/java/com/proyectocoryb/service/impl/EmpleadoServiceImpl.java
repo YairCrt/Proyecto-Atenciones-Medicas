@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -43,20 +45,36 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
     @Override
     public EmpleadoResponseDTO actualizarEmpleado(Long id, EmpleadoRequestDTO requestDTO) {
-        return null;
+
+        Empleado empleado = empleadoRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Empleado no encontrado con id: " + id));
+
+        if(!empleado.getPersona().getId().equals(requestDTO.getPersonaId())){
+            Persona persona = personaRepository.findById(requestDTO.getPersonaId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con id: " + id));
+            empleado.setPersona(persona);
+        }
+
+        empleadoMapper.updateEntity(empleado, requestDTO);
+        Empleado updateEmpleado = empleadoRepository.save(empleado);
+
+        log.info("Empleado actualizado. id{}", empleado.getId());
+        return empleadoMapper.toResponse(empleado);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<EmpleadoResponseDTO> listarEmpleados(Pageable pageable) {
-        return empleadoRepository.findAll(pageable)
-                .map(empleadoMapper::toResponse);
+    public List<EmpleadoResponseDTO> listarEmpleados() {
+        return empleadoRepository.findAll().stream()
+                .map(empleadoMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<EmpleadoResponseDTO> listarPorEstado(Estado estado, Pageable pageable) {
-        return null;
+    public Page<EmpleadoResponseDTO> listarPorEstado(String estado, Pageable pageable) {
+        Page<Empleado> page = empleadoRepository.findByEstado(Enum.valueOf(Estado.class, estado.toUpperCase()), pageable);
+        return page.map(empleadoMapper::toResponse);
     }
 
     @Override

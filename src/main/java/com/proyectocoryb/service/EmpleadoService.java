@@ -2,10 +2,10 @@ package com.proyectocoryb.service;
 
 import com.proyectocoryb.dto.request.EmpleadoRequestDTO;
 import com.proyectocoryb.dto.response.EmpleadoResponseDTO;
-import com.proyectocoryb.model.Estado;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmpleadoService {
@@ -14,9 +14,9 @@ public interface EmpleadoService {
 
     EmpleadoResponseDTO actualizarEmpleado(Long id, EmpleadoRequestDTO requestDTO);
 
-    Page<EmpleadoResponseDTO> listarEmpleados(Pageable pageable);
+    List<EmpleadoResponseDTO> listarEmpleados();
 
-    Page<EmpleadoResponseDTO> listarPorEstado(Estado estado, Pageable pageable);
+    Page<EmpleadoResponseDTO> listarPorEstado(String estado, Pageable pageable);
 
     void eliminarEmpleado(Long id);
 
